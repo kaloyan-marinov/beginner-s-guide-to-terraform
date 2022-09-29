@@ -15,6 +15,22 @@ provider "linode" {
 }
 
 # a linode server
+resource "linode_instance" "example_instance" {
+  # The following will be used as a label inside of the Linode interface.
+  label = "example_instance_label"
+
+  # The following is the operating system - ahem, the image! - that we'll be running.
+  image = "linode/ubuntu18.04"
+
+  region = "us-central"
+  type   = "g6-standard-1"
+
+  # If we had an SSH key and wanted to use that method to SSH into the machine,
+  # we could include it here:
+  # authorized_keys = ["ssh-rsa AAAA...Gw** user@example.local"]
+
+  root_pass = var.root_pass
+}
 
 # a domain
 
@@ -24,5 +40,9 @@ provider "linode" {
 
 # variables
 variable "token" {
+  # Empty!
+}
+
+variable "root_pass" {
   # Empty!
 }
