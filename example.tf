@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "linode" {
-  token = vars.token
+  token = var.token
   # Because I'm deploying a firewall, which is a "beta resource",
   # we need to specify that we are going to use the beta version of the API.
   api_version = "v4beta"
