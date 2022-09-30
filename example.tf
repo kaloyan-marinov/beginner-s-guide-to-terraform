@@ -54,6 +54,30 @@ resource "linode_domain_record" "example_domain_record" {
 }
 
 # a firewall
+# (whose purpose is to allow inbound traffic on port 80,
+# which is where we're going to set up a server
+# that's gonna run inside of our `resource "linode_instance"`)
+resource "linode_firewall" "example_firewall" {
+  label = "example_firewall_label"
+
+  inbound {
+    label    = "allow-http"
+    action   = "ACCEPT"
+    protocol = "TCP"
+    ports    = "80"
+    # Set the allowable IP addresses that [may] make this type of request.
+    ipv4 = ["0.0.0.0/0"]
+    ipv6 = ["ff00::/8"]
+  }
+
+  # Prevent anything, which is different from the above-configured inbound rule,
+  # from making it to our instance.
+  inbound_policy = "DROP"
+
+  outbound_policy = "ACCEPT"
+
+  linodes = [linode_instance.example_instance.id]
+}
 
 # variables
 variable "token" {
