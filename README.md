@@ -56,3 +56,40 @@ cp \
      )
 
    - asks for confirmation at the command line (need to type 'yes' and press [Enter])
+
+# Summary
+
+The full power of Infrastructure as Code (IaC) is that it enables us to:
+
+1. spin up resources
+
+2. get them all configured properly
+
+3. track changes for those over time
+   (as we [may] need to modify them, add additional things, etc.)
+
+# Topics for further study
+
+1. we used this top-level `example.tf` file,
+   and included all of our resources within it
+
+   if we wanted to build our code in such a way that it could be re-usable,
+   we would use a feature called _Terraform modules_
+
+2. this local `terraform.tfstate` file;
+   by default, it stores our state locally
+
+   but if we wanted to work with a team,
+   we would want to store that remotely somewhere
+
+   [and one good place to do that is within Terraform Cloud],
+   where you can store your state files and all your sensitive information
+
+3. finally, not every project will be starting from scratch;
+   you may have a bunch of resources already provisioned within your Linode account;
+
+   in the next video,
+   we're actually going to go through and take some resources,
+   which were provisioned ahead of time [(= "outside of the Terraform process")],
+   and import them into a Terraform configuration
+   [so] that we are able to use and manage them with IaC
