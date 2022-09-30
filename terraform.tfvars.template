@@ -1,2 +1,3 @@
 token = "<enter-an-API-token-for-your-Linode-account>"
 root_pass = "<select-a-root-password-for-the-Linode-virtual-machine-that-will-be-provisioned-via-Terraform>"
+domain_id = <enter-the-id-of-a-domain-resource-created-within-your-Linode-account>

@@ -32,9 +32,26 @@ resource "linode_instance" "example_instance" {
   root_pass = var.root_pass
 }
 
-# a domain
+# # a domain
+# resource "linode_domain" "example_domain" {
+#   domain    = "mysuperawesomesite.com"
+#   soa_email = "sid@devopsdirective.com"
+#   type      = "master"
+# }
 
 # a domain record
+# (whose purpose is to point our domain
+# to the IP address of this instance that we created)
+resource "linode_domain_record" "example_domain_record" {
+  # domain_id = linode_domain.example_domain.id
+  domain_id   = var.domain_id
+  name        = "www"
+  record_type = "A"
+  target      = linode_instance.example_instance.ip_address
+  # Set time-to-live (=: TTL),
+  # which configures how many seconds the DNS system should cache this record.
+  ttl_sec = 300
+}
 
 # a firewall
 
@@ -44,5 +61,9 @@ variable "token" {
 }
 
 variable "root_pass" {
+  # Empty!
+}
+
+variable "domain_id" {
   # Empty!
 }
