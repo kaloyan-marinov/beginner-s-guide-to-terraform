@@ -30,8 +30,63 @@ resource "linode_instance" "example_instance" {
   # authorized_keys = ["ssh-rsa AAAA...Gw** user@example.local"]
 
   root_pass = var.root_pass
+
+  # Concept known as "provisioners".
+  # Terraform allows us to take certain actions
+  # after a resource has been deployed.
+  # Importantly,
+  # "provisioners only occur upon the first creation of" the resource in question.
+  #
+  # In this case, once our Linode server comes up,
+  # we want to run a script that will start a web server for us
+  # so that we will be able to access it from the browser.
+
+  # Copy the `set-up-server.sh` script onto the filesystem of the Linode server.
+  provisioner "file" {
+    source      = "set-up-server.sh"
+    destination = "/tmp/set-up-server.sh"
+
+    # Give it a way for Terraform to connect to this instance.
+    connection {
+      type     = "ssh"
+      host     = self.ip_address # instead of `linode_instance.example_instance.ip_address`
+      user     = "root"
+      password = var.root_pass
+    }
+  }
+
+  # Invoke the copied `set-up-server.sh` script.
+  provisioner "remote-exec" {
+    # Specify the actual shell command that gets executed on the server.
+    # (I found that, when I was testing this, it would run [the 2nd command below]
+    # and, before it had even fully started that web server,
+    # Terraform would close the connection, which would cause it to not work properly.
+    # So, by [adding the 3rd command below]
+    # before closing my Terraform "remote-exec" connection,
+    # it's able to properly start that script.)
+    inline = [
+      "chmod +x /tmp/set-up-server.sh",
+      "/tmp/set-up-server.sh",
+      "sleep 1",
+    ]
+
+    connection {
+      type     = "ssh"
+      host     = self.ip_address # instead of `linode_instance.example_instance.ip_address`
+      user     = "root"
+      password = var.root_pass
+    }
+  }
 }
 
+# [
+# Importantly,
+# add the Linode nameservers
+# to the DNS setup for the domain specified below,
+# and this addition has to be done (on the website) where you purchased the domain.
+# Do bear in mind that,
+# when you created DNS records, they can take up to 48 hours to propagate.
+# ]
 # # a domain
 # resource "linode_domain" "example_domain" {
 #   domain    = "mysuperawesomesite.com"
